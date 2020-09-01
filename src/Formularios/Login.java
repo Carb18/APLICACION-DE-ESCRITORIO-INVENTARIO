@@ -130,7 +130,7 @@ public class Login extends javax.swing.JFrame {
                         form.setVisible(true);
                         this.dispose();
                     } else {
-                        JOptionPane.showMessageDialog(null, "Usuario no encontrado");
+                        JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");
                     }
             }
 
@@ -138,25 +138,13 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "" + ex.getMessage());
         }
     }
-    public Connection Connect2(){
-        Connection conexion=null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/prueba01", "root", "Singa_fj212502a692");
-            JOptionPane.showMessageDialog(null, "Conexión exitosa con Base de datos");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error de conexión" + e.getMessage());
-        }
-        
-        return conexion;
-    }
+    
     private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUsuarioActionPerformed
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         ValidarUsuario();
-        Connect2();
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

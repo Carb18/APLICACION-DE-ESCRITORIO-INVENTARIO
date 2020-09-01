@@ -17,9 +17,23 @@ import javax.swing.table.DefaultTableModel;
  * @author Camilo Andres Ruiz B
  */
 public class Busqueda extends javax.swing.JFrame {
-    DefaultTableModel model1;
+
+    DefaultTableModel model1 = new DefaultTableModel() {
+        @Override
+         public boolean isCellEditable (int fila, int columna) {
+         if (columna > 3)
+             return true;
+         return false;
+     }
+       
+
+    };
+
     public Busqueda() {
         initComponents();
+        Cargar("");
+        setResizable(false);
+
     }
 
     /**
@@ -31,8 +45,17 @@ public class Busqueda extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        aux = new javax.swing.JTextField();
+        jButton4 = new javax.swing.JButton();
+
+        jLabel1.setText("jLabel1");
+
+        jButton2.setText("jButton2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,7 +70,27 @@ public class Busqueda extends javax.swing.JFrame {
 
             }
         ));
+        t_datos = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false; //Disallow the editing of any cell
+            }
+        };
         jScrollPane1.setViewportView(t_datos);
+
+        jLabel2.setText("BUSCAR PRODUCTOS");
+
+        aux.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                auxKeyReleased(evt);
+            }
+        });
+
+        jButton4.setText("SALIR");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -55,53 +98,68 @@ public class Busqueda extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 867, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(aux, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton4)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(177, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(aux, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    void Cargar(){
-      try{
-      String [] titulos={"Código Producto","Descripción","Categoría","Ubicación"};
-      String [] registros = new String[4];
-      String sql="SELECT * FROM PRODUCTOS";
-      model1 = new DefaultTableModel(null,titulos);
-      ConexionSQL Cone = new ConexionSQL();
-      Connection Con = Cone.Connect2();
-      
-      Statement st = Con.createStatement();
-      ResultSet rs = st.executeQuery(sql);
-      
-      while(rs.next()){
-        registros[0]=rs.getString("CodProducto");
-        registros[1]=rs.getString("Descripcion");
-        registros[2]=rs.getString("Categoria");
-        registros[3]=rs.getString("Ubicacion");
-        model1.addRow(registros);
-      }
-      t_datos.setModel(model1);
-      }catch(Exception ex){
-          JOptionPane.showMessageDialog(null, "Error Inesperado " + ex.getMessage());
-      }
-      
-      
+    private void auxKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_auxKeyReleased
+        Cargar(aux.getText());
+    }//GEN-LAST:event_auxKeyReleased
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    void Cargar(String valor) {
+        try {
+            String[] titulos = {"Código Producto", "Descripción", "Categoría", "Ubicación"};
+            String[] registros = new String[4];
+            String sql = "SELECT * FROM PRODUCTOS WHERE Descripcion LIKE '%" + valor + "%'";
+            model1 = new DefaultTableModel(null, titulos);
+            ConexionSQL Cone = new ConexionSQL();
+            Connection Con = Cone.Connect2();
+
+            Statement st = Con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                registros[0] = rs.getString("CodProducto");
+                registros[1] = rs.getString("Descripcion");
+                registros[2] = rs.getString("Categoria");
+                registros[3] = rs.getString("Ubicacion");
+                model1.addRow(registros);
+            }
+            t_datos.setModel(model1);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Error Inesperado " + ex.getMessage());
+        }
+
     }
-    
+
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -122,8 +180,7 @@ public class Busqueda extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-           
-            
+
             public void run() {
                 new Busqueda().setVisible(true);
             }
@@ -131,6 +188,11 @@ public class Busqueda extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField aux;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable t_datos;
     // End of variables declaration//GEN-END:variables

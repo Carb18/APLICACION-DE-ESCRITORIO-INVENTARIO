@@ -12,7 +12,6 @@ public class ConexionSQL {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conectar = DriverManager.getConnection("jdbc:mysql://localhost:3306/users", "root", "Singa_fj212502a692");
-            JOptionPane.showMessageDialog(null, "Conexión exitosa con Base de datos");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error de conexión" + e.getMessage());
         }
@@ -26,7 +25,7 @@ public class ConexionSQL {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/prueba01", "root", "Singa_fj212502a692");
-            JOptionPane.showMessageDialog(null, "Conexión exitosa con Base de datos");
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error de conexión" + e.getMessage());
         }
