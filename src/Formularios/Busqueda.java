@@ -5,15 +5,19 @@
  */
 package Formularios;
 
+import conexion.ConexionSQL;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Camilo Andres Ruiz B
  */
 public class Busqueda extends javax.swing.JFrame {
-
-    /**
-     * Creates new form Busqueda
-     */
+    DefaultTableModel model1;
     public Busqueda() {
         initComponents();
     }
@@ -28,11 +32,11 @@ public class Busqueda extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        t_datos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        t_datos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -43,7 +47,7 @@ public class Busqueda extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(t_datos);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -65,8 +69,31 @@ public class Busqueda extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public class Busqueda_Inv{
-        
+    void Cargar(){
+      try{
+      String [] titulos={"Código Producto","Descripción","Categoría","Ubicación"};
+      String [] registros = new String[4];
+      String sql="SELECT * FROM PRODUCTOS";
+      model1 = new DefaultTableModel(null,titulos);
+      ConexionSQL Cone = new ConexionSQL();
+      Connection Con = Cone.Connect2();
+      
+      Statement st = Con.createStatement();
+      ResultSet rs = st.executeQuery(sql);
+      
+      while(rs.next()){
+        registros[0]=rs.getString("CodProducto");
+        registros[1]=rs.getString("Descripcion");
+        registros[2]=rs.getString("Categoria");
+        registros[3]=rs.getString("Ubicacion");
+        model1.addRow(registros);
+      }
+      t_datos.setModel(model1);
+      }catch(Exception ex){
+          JOptionPane.showMessageDialog(null, "Error Inesperado " + ex.getMessage());
+      }
+      
+      
     }
     
     public static void main(String args[]) {
@@ -96,6 +123,7 @@ public class Busqueda extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
            
+            
             public void run() {
                 new Busqueda().setVisible(true);
             }
@@ -104,6 +132,6 @@ public class Busqueda extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable t_datos;
     // End of variables declaration//GEN-END:variables
 }
